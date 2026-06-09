@@ -24,7 +24,7 @@
         .relative{position:relative}.absolute{position:absolute}
         .z-10{z-index:10}.cursor-pointer{cursor:pointer}
         
-        /* ĐÂY LÀ DÒNG CHỮA LỖI GIÚP MENU BIẾN MẤT HOÀN TOÀN KHI VÀO BÀI HỌC */
+        /* CSS Ẩn Menu */
         .hidden { display: none !important; }
         
         /* CSS TÙY BIẾN SỬA LỖI TRÀN HEADER TRÊN IPHONE */
@@ -109,7 +109,6 @@
             
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div class="bg-blue-50 border-4 border-blue-200 rounded-3xl p-6">
-                    <!-- Giao diện nút đóng/mở Học kỳ 1 -->
                     <div class="flex justify-between items-center mb-4 border-b-2 border-blue-200 pb-2 cursor-pointer bounce-hover" onclick="toggleSemester('hk1')">
                         <h3 class="text-2xl font-black text-blue-600 m-0">Học Kỳ 1 (Phạm vi 10)</h3>
                         <span id="icon-hk1" class="text-xl bg-blue-200 text-blue-800 rounded-full w-8 h-8 flex items-center justify-center font-bold">🔽</span>
@@ -117,7 +116,6 @@
                     <div id="menu-hk1" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
                 </div>
                 <div class="bg-green-50 border-4 border-green-200 rounded-3xl p-6">
-                    <!-- Giao diện nút đóng/mở Học kỳ 2 -->
                     <div class="flex justify-between items-center mb-4 border-b-2 border-green-200 pb-2 cursor-pointer bounce-hover" onclick="toggleSemester('hk2')">
                         <h3 class="text-2xl font-black text-green-600 m-0">Học Kỳ 2 (Phạm vi 100)</h3>
                         <span id="icon-hk2" class="text-xl bg-green-200 text-green-800 rounded-full w-8 h-8 flex items-center justify-center font-bold">🔽</span>
@@ -244,14 +242,13 @@
             
             if (menu.classList.contains("hidden")) {
                 menu.classList.remove("hidden");
-                icon.innerText = "🔽"; // Mũi tên chỉ xuống (Mở)
+                icon.innerText = "🔽"; 
             } else {
                 menu.classList.add("hidden");
-                icon.innerText = "▶️"; // Mũi tên chỉ ngang (Đóng)
+                icon.innerText = "▶️"; 
             }
         }
 
-        // INIT MENU
         function renderMenu() {
             const hk1Container = document.getElementById("menu-hk1");
             const hk2Container = document.getElementById("menu-hk2");
@@ -277,7 +274,7 @@
             });
         }
 
-        // SPEECH ENGINE (IOS SUPPORTED)
+        // SPEECH ENGINE 
         function speak(text) {
             if (!voiceEnabled) return;
             if ('speechSynthesis' in window) {
@@ -306,7 +303,6 @@
                 u.volume = 0;
                 window.speechSynthesis.speak(u);
                 audioUnlocked = true;
-                console.log("iOS Audio Core Unlocked");
             }
         }
 
@@ -316,6 +312,7 @@
             speak("Phương pháp làm bài. " + currentLesson.method);
         }
 
+        // ĐÃ SỬA: Xóa hàm tự động đọc (readMethod) để yên tĩnh khi chọn bài
         function startLesson(id) {
             currentLesson = CURRICULUM.find(l => l.id === id);
             document.getElementById("screen-menu").classList.add("hidden");
@@ -323,8 +320,7 @@
             document.getElementById("intro-title").innerText = currentLesson.title;
             document.getElementById("intro-content").innerHTML = currentLesson.method;
             
-            // Xóa setTimeout, gọi hàm đọc âm thanh trực tiếp để không bị trình duyệt chặn
-            readMethod(); 
+            // Xóa readMethod() ở đây
         }
 
         function startGameAfterIntro() {
@@ -342,6 +338,7 @@
             if ('speechSynthesis' in window) window.speechSynthesis.cancel();
         }
 
+        // ĐÃ SỬA: Xóa hàm tự động đọc (speakPrompt) khi qua câu mới
         function loadNextRandomQuestion() {
             document.getElementById("btn-next").classList.add("hidden");
             document.getElementById("hint-box").classList.add("hidden"); 
@@ -361,7 +358,8 @@
                 case "ADVANCED_CHAIN": renderAdvancedChain(); break;
                 case "ADVANCED_BALANCE": renderAdvancedBalance(); break;
             }
-            speakPrompt();
+            
+            // Xóa speakPrompt() ở đây
         }
 
         // GAME ENGINES
@@ -581,6 +579,7 @@
             });
         }
 
+        // GIỮ LẠI LỆNH ĐỌC KHI BÉ TRẢ LỜI ĐÚNG / SAI
         function submitAnswer(user, correct, btnEl) {
             const btns = document.getElementById("interactive-inputs").querySelectorAll("button");
             btns.forEach(b => b.disabled = true);
@@ -594,13 +593,19 @@
                 score += 10;
                 document.getElementById("score-val").innerText = score;
                 document.getElementById("prompt-text").innerText = `🎉 Bé giỏi quá! Đáp án chính xác là ${correct}!`;
+                
+                // MÁY ĐỌC KHEN NGỢI
                 speak(`Giỏi quá! Bé yêu xuất sắc lắm!`);
+                
                 document.getElementById("btn-next").classList.remove("hidden");
             } else {
                 btnEl.classList.add("bg-red-500", "text-white", "border-red-600");
                 playSfx('fail');
                 document.getElementById("prompt-text").innerText = `Chưa đúng rồi. Bé thử lại xem sao nhé!`;
+                
+                // MÁY ĐỌC ĐỘNG VIÊN
                 speak(`Chưa đúng rồi, thử lại nha bé yêu!`);
+                
                 setTimeout(() => {
                     btnEl.classList.remove("bg-red-500", "text-white", "border-red-600");
                     btns.forEach(b => b.disabled = false);
