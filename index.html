@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bé Học Toán Trực Quan - Lớp 1 (Toàn Tập)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body { font-family: 'Nunito', sans-serif; background-color: #f0f9ff; user-select: none; }
+        .bounce-hover:hover { transform: scale(1.05) translateY(-5px); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .pulse-active { animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        .shape { display: inline-block; width: 80px; height: 80px; margin: 10px; }
+        .shape-square { background-color: #f87171; }
+        .shape-circle { background-color: #60a5fa; border-radius: 50%; }
+        .shape-triangle { width: 0; height: 0; border-left: 40px solid transparent; border-right: 40px solid transparent; border-bottom: 80px solid #fbbf24; background-color: transparent;}
+        .shape-rectangle { background-color: #34d399; width: 120px; height: 70px; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col py-6 px-4">
+    <!-- Header -->
+    <div class="max-w-5xl w-full mx-auto bg-white rounded-3xl shadow-sm p-4 flex justify-between items-center mb-6">
+        <div class="flex items-center gap-3" onclick="backToMenu()" style="cursor:pointer;">
+            <span class="text-4xl">🎓</span>
+            <div>
+                <h1 class="text-2xl font-black text-blue-600">Toán Học Trực Quan</h1>
+                <p class="text-xs font-bold text-gray-400">Trọn bộ Lớp 1 (HK1 & HK2)</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <!-- Theme Selector -->
+            <select id="theme-selector" onchange="changeTheme()" class="bg-indigo-100 hover:bg-indigo-200 transition-colors text-indigo-700 font-black border-2 border-indigo-200 rounded-xl px-3 py-2 outline-none cursor-pointer">
+                <option value="FRUIT">🍓 Hoa quả</option>
+                <option value="POLICE">🚓 Cảnh sát Labrador</option>
+                <option value="ANIMAL">🐶 Động vật</option>
+            </select>
+            <button id="btn-voice" onclick="toggleVoice()" class="w-12 h-12 rounded-full bg-yellow-100 text-yellow-600 text-xl"><i class="fa-solid fa-volume-high"></i></button>
+            <div class="bg-emerald-100 text-emerald-700 px-4 py-2 rounded-2xl font-black text-lg">
+                ⭐ Điểm: <span id="score-val">0</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Box -->
+    <div class="max-w-5xl w-full mx-auto flex-grow bg-white rounded-[40px] shadow-xl p-8 border-4 border-yellow-300 relative flex flex-col">
+        
+        <!-- MENU SCREEN -->
+        <div id="screen-menu" class="flex flex-col gap-8 w-full">
+            <div class="text-center">
+                <h2 class="text-3xl font-extrabold text-amber-500 mb-2">Bản Đồ Học Tập Lớp 1</h2>
+                <p class="text-gray-500 font-bold">Hãy chọn bài học để bắt đầu nhé bé yêu!</p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Semester 1 -->
+                <div class="bg-blue-50 border-4 border-blue-200 rounded-3xl p-6">
+                    <h3 class="text-2xl font-black text-blue-600 mb-4 border-b-2 border-blue-200 pb-2">Học Kỳ 1 (Phạm vi 10)</h3>
+                    <div id="menu-hk1" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+                </div>
+                <!-- Semester 2 -->
+                <div class="bg-green-50 border-4 border-green-200 rounded-3xl p-6">
+                    <h3 class="text-2xl font-black text-green-600 mb-4 border-b-2 border-green-200 pb-2">Học Kỳ 2 (Phạm vi 100)</h3>
+                    <div id="menu-hk2" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- INTRO SCREEN (PHƯƠNG PHÁP) -->
+        <div id="screen-intro" class="hidden flex flex-col h-full flex-grow items-center justify-center text-center gap-8">
+            <h2 id="intro-title" class="text-4xl font-black text-amber-500">Phương pháp làm bài</h2>
+            <div class="bg-amber-50 border-4 border-amber-200 rounded-3xl p-8 max-w-3xl shadow-inner relative">
+                <span class="absolute -top-6 -left-6 text-6xl">👩‍🏫</span>
+                <button onclick="readMethod()" class="absolute -top-6 -right-6 w-14 h-14 rounded-full border-4 border-amber-200 bg-amber-100 text-amber-600 hover:bg-amber-200 text-2xl bounce-hover shadow-md" title="Đọc phương pháp"><i class="fa-solid fa-volume-high"></i></button>
+                <div id="intro-content" class="text-2xl font-bold text-amber-800 leading-relaxed text-left">
+                    <!-- Nội dung phương pháp -->
+                </div>
+            </div>
+            <button onclick="startGameAfterIntro()" class="px-10 py-5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full font-black text-3xl shadow-lg bounce-hover mt-4">
+                Đã hiểu! Bắt đầu làm bài 🚀
+            </button>
+        </div>
+
+        <!-- GAME SCREEN -->
+        <div id="screen-game" class="hidden flex flex-col h-full flex-grow">
+            <!-- Game Header -->
+            <div class="flex justify-between items-center pb-4 border-b-2 border-gray-100">
+                <button onclick="backToMenu()" class="text-gray-500 font-bold hover:text-gray-800"><i class="fa-solid fa-arrow-left"></i> Trở về</button>
+                <h3 id="game-title" class="text-2xl font-black text-blue-600">Đang học Toán</h3>
+                <div class="flex gap-2">
+                    <button onclick="showHint()" class="w-10 h-10 rounded-full bg-yellow-100 text-yellow-600 hover:bg-yellow-200 transition-all shadow-sm" title="Xem Hướng Dẫn"><i class="fa-solid fa-lightbulb"></i></button>
+                    <button onclick="speakPrompt()" class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 transition-all shadow-sm"><i class="fa-solid fa-volume-high"></i></button>
+                </div>
+            </div>
+
+            <!-- Prompt -->
+            <div id="speech-bubble" class="mt-4 bg-blue-50 border-2 border-blue-200 text-blue-800 rounded-2xl p-4 text-center text-xl font-bold">
+                <span id="prompt-text">Câu hỏi hiển thị tại đây</span>
+            </div>
+
+            <!-- Hint Box (Hidden by default) -->
+            <div id="hint-box" class="hidden mt-4 bg-amber-50 border-2 border-amber-200 text-amber-800 rounded-2xl p-4 text-center text-lg font-bold flex flex-col items-center gap-3">
+                <div>💡 <span id="hint-text">Gợi ý hiển thị ở đây</span></div>
+                <button onclick="speakHint()" class="px-4 py-2 bg-amber-200 text-amber-800 rounded-full hover:bg-amber-300 shadow-sm"><i class="fa-solid fa-volume-high"></i> Nghe đọc gợi ý</button>
+            </div>
+
+            <!-- Workspace -->
+            <div id="workspace" class="my-8 flex justify-center items-center gap-6 flex-wrap w-full flex-grow min-h-[250px]"></div>
+
+            <!-- Controls -->
+            <div id="controls" class="flex flex-col items-center gap-4 mt-auto">
+                <div id="interactive-inputs" class="flex justify-center flex-wrap gap-4 w-full"></div>
+                <button id="btn-next" onclick="loadNextRandomQuestion()" class="hidden px-8 py-4 bg-blue-500 text-white rounded-full font-black text-xl shadow-lg bounce-hover">
+                    Câu Tiếp Theo ➡️
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT LOGIC -->
+    <script>
+        // GLOBAL STATE
+        let score = 0;
+        let voiceEnabled = true;
+        let currentLesson = null;
+        let gameState = {};
+        let currentHint = "";
+        
+        // THEMES
+        let currentTheme = "FRUIT";
+        const THEME_DATA = {
+            "FRUIT": ["🍎", "🍓", "🍌", "🍉", "🍇"],
+            "POLICE": ["👮‍♂️", "🚓", "🚁", "🚨", "🛡️"],
+            "ANIMAL": ["🐶", "🐱", "🐰", "🦊", "🦁"]
+        };
+        
+        function changeTheme() {
+            currentTheme = document.getElementById("theme-selector").value;
+            // Nếu đang trong bài tập, render lại câu hỏi mới bằng theme mới
+            if (currentLesson && currentLesson.type === "COUNTING" && !currentLesson.useBundles) {
+                loadNextRandomQuestion();
+            }
+        }
+
+        // CURRICULUM DATABASE
+        const CURRICULUM = [
+            // --- HỌC KỲ 1 ---
+            { id: "hk1_1", semester: 1, type: "COUNTING", title: "Bé Tập Đếm", icon: "🍓", desc: "Đếm số vật phẩm từ 1 đến 10", maxRange: 10, items: ["🍎", "🍓", "🍌", "🚙", "🎈"],
+              method: "Khi đếm, bé hãy dùng ngón tay trỏ vào từng vật và đọc to số thứ tự: 1, 2, 3... Đếm đến vật cuối cùng thì đó chính là tổng số lượng!" },
+            { id: "hk1_2", semester: 1, type: "COMPARISON", title: "So Sánh Lớn Bé", icon: "⚖️", desc: "Điền dấu >, <, = (phạm vi 10)", maxRange: 10,
+              method: "Bé hãy ghi nhớ tên các dấu nhé:<br/>- Dấu <b>></b> gọi là dấu <b>LỚN HƠN</b><br/>- Dấu <b><</b> gọi là dấu <b>BÉ HƠN</b><br/>- Dấu <b>=</b> gọi là dấu <b>BẰNG NHAU</b><br/><br/>💡 <i>Mẹo nhỏ:</i> Dấu > và < giống cái miệng con cá sấu. Cá sấu luôn luôn <b>HÁ TO MIỆNG</b> về phía con số to hơn!" },
+              
+            { id: "hk1_3a", semester: 1, type: "ADDITION", pattern: [0, 1], title: "Cộng Cơ Bản (A+B)", icon: "➕", desc: "Tìm tổng của 2 số", maxRange: 10,
+              method: "Phép CỘNG nghĩa là GỘP LẠI.<br/><br/>Bé xòe ngón tay ứng với số lớn hơn, rồi đếm nhẩm thêm ngón tay ứng với số nhỏ hơn nhé!" },
+            { id: "hk1_3b", semester: 1, type: "ADDITION", pattern: [2, 3], title: "Tìm Số Hạng (A+?=C)", icon: "🧩", desc: "Tìm phần bị khuyết", maxRange: 10,
+              method: "Tìm phần bị thiếu trong phép cộng:<br/><br/>Bé đếm tiếp từ số đã biết cho đến khi đạt được số tổng (C) xem là phải thêm mấy ngón tay. Hoặc nhanh nhất là lấy (C) trừ đi số đã biết nhé!" },
+            { id: "hk1_3c", semester: 1, type: "ADDITION", pattern: [4], title: "Đẳng Thức (?=A+B)", icon: "⚖️", desc: "Dấu bằng đứng trước", maxRange: 10,
+              method: "Đẳng thức ngược:<br/><br/>Dấu bằng nằm ở bên trái cũng không sao! Bé cứ tính bình thường xem A + B bằng mấy rồi điền vào dấu hỏi chấm nhé." },
+              
+            { id: "hk1_4a", semester: 1, type: "SUBTRACTION", pattern: [0], title: "Trừ Cơ Bản (A-B)", icon: "➖", desc: "Tìm hiệu của 2 số", maxRange: 10,
+              method: "Phép TRỪ nghĩa là BỚT ĐI.<br/><br/>Bé xòe số ngón tay ứng với số bị trừ, rồi gập đi số ngón tay cần trừ. Đếm xem còn lại mấy ngón đang xòe nhé!" },
+            { id: "hk1_4b", semester: 1, type: "SUBTRACTION", pattern: [1, 2], title: "Tìm Số Khuyết (A-?=C)", icon: "🧩", desc: "Tìm số trừ/bị trừ", maxRange: 10,
+              method: "Bài toán khuyết phép trừ:<br/><br/>- Nếu thiếu số ở giữa (A - ? = C): Bé lấy A trừ đi C.<br/>- Nếu thiếu số ở đầu (? - B = C): Bé hãy lấy C cộng lại với B để tìm ra số to nhất ban đầu nhé!" },
+              
+            { id: "hk1_5", semester: 1, type: "SHAPES", title: "Hình Học", icon: "🔺", desc: "Nhận biết vuông, tròn, tam giác...",
+              method: "Bé hãy quan sát đặc điểm:<br/><br/>- <b>Hình vuông</b> có 4 cạnh dài bằng nhau.<br/>- <b>Hình chữ nhật</b> cũng có 4 cạnh nhưng dài hơn hình vuông.<br/>- <b>Hình tròn</b> cong đều và lăn được.<br/>- <b>Hình tam giác</b> có 3 đỉnh nhọn!" },
+              
+            // --- NÂNG CAO HK1 ---
+            { id: "hk1_6", semester: 1, type: "ADVANCED_CHAIN", title: "Toán Chuỗi (Đến 10)", icon: "🚂", desc: "Cộng trừ liên tiếp 3 số", maxRange: 10,
+              method: "Làm toán chuỗi:<br/><br/>Bé hãy tính từ trái sang phải nhé. Lấy số thứ nhất cộng/trừ số thứ hai được bao nhiêu, bé NHỚ trong đầu rồi tiếp tục tính với số thứ ba!" },
+            { id: "hk1_7", semester: 1, type: "ADVANCED_BALANCE", title: "So Sánh Biểu Thức", icon: "⚖️", desc: "So sánh (A+B) và (C+D)", maxRange: 10,
+              method: "So sánh biểu thức:<br/><br/>Bé tính xem phép tính bên trái bằng mấy, phép tính bên phải bằng mấy. Sau đó so sánh hai kết quả đó với nhau rồi mới điền dấu >, <, = nhé!" },
+            
+            // --- HỌC KỲ 2 ---
+            { id: "hk2_1", semester: 2, type: "COUNTING", title: "Đếm Đến 100", icon: "🔢", desc: "Nhận biết hàng chục và đơn vị", maxRange: 99, useBundles: true,
+              method: "Với số lượng lớn, người ta thường buộc lại thành từng BÓ CHỤC (1 bó = 10 que).<br/><br/>Bé hãy đếm số bó chục trước (10, 20, 30...), rồi đếm tiếp các que lẻ ở bên ngoài để ra kết quả nhanh nhất nhé!" },
+            { id: "hk2_2", semester: 2, type: "COMPARISON", title: "So Sánh Đến 100", icon: "⚖️", desc: "So sánh 2 số lớn (>, <, =)", maxRange: 99,
+              method: "Bé nhớ các dấu: <b>> (Lớn)</b>, <b>< (Bé)</b>, <b>= (Bằng)</b> nhé.<br/><br/>Để so sánh số lớn, bé hãy nhìn vào chữ số <b>Hàng Chục</b> trước. Số nào có Hàng Chục lớn hơn thì số đó lớn hơn!<br/>Nếu Hàng Chục bằng nhau thì bé mới so sánh tiếp đến chữ số Hàng Đơn vị." },
+              
+            { id: "hk2_3a", semester: 2, type: "ADDITION", pattern: [0], title: "Cộng Phạm Vi 100", icon: "➕", desc: "Cộng số lớn không nhớ", maxRange: 90,
+              method: "Cộng số lớn trong phạm vi 100:<br/><br/>Bé hãy cộng các chữ số ở <b>Hàng Đơn vị</b> với nhau trước (số đứng ở cuối), sau đó mới cộng các chữ số ở <b>Hàng Chục</b> với nhau (số đứng ở đầu)." },
+            { id: "hk2_3b", semester: 2, type: "ADDITION", pattern: [2, 3], title: "Số Hạng Khuyết (100)", icon: "🧩", desc: "Tìm phần khuyết số lớn", maxRange: 90,
+              method: "Tìm số khuyết trong phép cộng lớn:<br/><br/>Bé lấy Tổng TRỪ ĐI số đã biết. Nhớ trừ Hàng Đơn vị trước, Hàng Chục sau nhé!" },
+              
+            { id: "hk2_4a", semester: 2, type: "SUBTRACTION", pattern: [0], title: "Trừ Phạm Vi 100", icon: "➖", desc: "Trừ số lớn không nhớ", maxRange: 90,
+              method: "Trừ số lớn trong phạm vi 100:<br/><br/>Bé hãy trừ các chữ số ở <b>Hàng Đơn vị</b> với nhau trước (số đứng ở cuối), sau đó mới trừ các chữ số ở <b>Hàng Chục</b> với nhau (số đứng ở đầu)." },
+            { id: "hk2_4b", semester: 2, type: "SUBTRACTION", pattern: [1, 2], title: "Số Trừ Khuyết (100)", icon: "🧩", desc: "Tìm phần khuyết số lớn", maxRange: 90,
+              method: "Tìm số khuyết trong phép trừ lớn:<br/><br/>- Thiếu số ở giữa: Lấy số đầu trừ đi Kết quả.<br/>- Thiếu số ở đầu: Lấy Kết quả cộng với số ở giữa nhé!" },
+              
+            { id: "hk2_5", semester: 2, type: "TIME", title: "Xem Đồng Hồ", icon: "🕐", desc: "Nhận biết giờ chẵn trên đồng hồ",
+              method: "Cách xem đồng hồ:<br/><br/>- <b>Kim DÀI (màu xanh)</b> chỉ phút, nếu kim dài chỉ thẳng lên số 12 thì đó là giờ chẵn.<br/>- <b>Kim NGẮN (màu đen)</b> chỉ giờ, kim ngắn chỉ vào số nào thì là bấy nhiêu giờ. Ví dụ kim ngắn chỉ số 3 là 3 giờ!" },
+              
+            // --- NÂNG CAO ---
+            { id: "hk2_6", semester: 2, type: "ADVANCED_CHAIN", title: "Toán Chuỗi 3 Số", icon: "🚂", desc: "Cộng trừ liên tiếp 3 số", maxRange: 20,
+              method: "Làm toán chuỗi:<br/><br/>Bé hãy tính từ trái sang phải nhé. Lấy số thứ nhất cộng/trừ số thứ hai được bao nhiêu, bé NHỚ trong đầu rồi tiếp tục tính với số thứ ba!" },
+            { id: "hk2_7", semester: 2, type: "ADVANCED_BALANCE", title: "So Sánh Phép Tính", icon: "⚖️", desc: "So sánh (A+B) và (C+D)", maxRange: 20,
+              method: "So sánh biểu thức:<br/><br/>Bé tính xem phép tính bên trái bằng mấy, phép tính bên phải bằng mấy. Sau đó so sánh hai kết quả đó với nhau rồi mới điền dấu >, <, = nhé!" }
+        ];
+
+        // INIT MENU
+        function renderMenu() {
+            const hk1Container = document.getElementById("menu-hk1");
+            const hk2Container = document.getElementById("menu-hk2");
+            hk1Container.innerHTML = ""; hk2Container.innerHTML = "";
+
+            CURRICULUM.forEach(lesson => {
+                const btn = document.createElement("button");
+                btn.className = "bounce-hover bg-white hover:bg-gray-50 border-2 border-gray-200 rounded-2xl p-4 text-left shadow-sm flex flex-col gap-2";
+                btn.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span class="text-3xl">${lesson.icon}</span>
+                        <h4 class="font-bold text-gray-800 text-lg">${lesson.title}</h4>
+                    </div>
+                    <p class="text-xs text-gray-500 font-semibold">${lesson.desc}</p>
+                `;
+                btn.onclick = () => startLesson(lesson.id);
+                
+                if (lesson.semester === 1) hk1Container.appendChild(btn);
+                else hk2Container.appendChild(btn);
+            });
+        }
+
+        // NAVIGATION
+        function readMethod() {
+            if (!currentLesson) return;
+            let plainTextMethod = currentLesson.method.replace(/<br\/>/g, '. ').replace(/<\/?b>/g, '').replace(/<\/?i>/g, '');
+            speak("Phương pháp làm bài. " + plainTextMethod);
+        }
+
+        function startLesson(id) {
+            currentLesson = CURRICULUM.find(l => l.id === id);
+            document.getElementById("screen-menu").classList.add("hidden");
+            
+            // Hiện màn hình Giới thiệu Phương pháp
+            document.getElementById("screen-intro").classList.remove("hidden");
+            document.getElementById("intro-title").innerText = currentLesson.title;
+            document.getElementById("intro-content").innerHTML = currentLesson.method;
+            
+            readMethod();
+        }
+
+        function startGameAfterIntro() {
+            if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+            document.getElementById("screen-intro").classList.add("hidden");
+            document.getElementById("screen-game").classList.remove("hidden");
+            document.getElementById("game-title").innerText = currentLesson.title;
+            loadNextRandomQuestion();
+        }
+
+        function backToMenu() {
+            document.getElementById("screen-intro").classList.add("hidden");
+            document.getElementById("screen-menu").classList.remove("hidden");
+            document.getElementById("screen-game").classList.add("hidden");
+            if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        }
+
+        function loadNextRandomQuestion() {
+            document.getElementById("btn-next").classList.add("hidden");
+            document.getElementById("hint-box").classList.add("hidden"); // Ẩn gợi ý khi sang câu mới
+            const workspace = document.getElementById("workspace");
+            const inputs = document.getElementById("interactive-inputs");
+            workspace.innerHTML = ""; inputs.innerHTML = "";
+            gameState = {};
+            currentHint = "";
+
+            switch (currentLesson.type) {
+                case "COUNTING": renderCounting(); break;
+                case "COMPARISON": renderComparison(); break;
+                case "ADDITION": renderAddition(); break;
+                case "SUBTRACTION": renderSubtraction(); break;
+                case "SHAPES": renderShapes(); break;
+                case "TIME": renderTime(); break;
+                case "ADVANCED_CHAIN": renderAdvancedChain(); break;
+                case "ADVANCED_BALANCE": renderAdvancedBalance(); break;
+            }
+            speakPrompt();
+        }
+
+        // GAME ENGINES
+        function renderCounting() {
+            let count = 0;
+            if (currentLesson.useBundles) {
+                count = Math.floor(Math.random() * 80) + 10; // 10 to 89
+                const tens = Math.floor(count / 10);
+                const ones = count % 10;
+                document.getElementById("prompt-text").innerText = `Có bao nhiêu que tính ở đây? (${tens} bó chục và ${ones} que rời)`;
+                
+                let html = `<div class="flex flex-wrap gap-6 justify-center w-full">`;
+                for(let i=0; i<tens; i++) html += `<div class="text-5xl border-4 border-red-500 p-2 rounded-xl bg-red-50" title="1 Chục">🥢x10</div>`;
+                if(ones > 0) {
+                    html += `<div class="flex gap-1 flex-wrap items-center">`;
+                    for(let i=0; i<ones; i++) html += `<div class="text-4xl">🥢</div>`;
+                    html += `</div>`;
+                }
+                html += `</div>`;
+                document.getElementById("workspace").innerHTML = html;
+                currentHint = `Bé hãy nhớ: 1 bó chục là 10. Mình đếm số chục trước (10, 20...), rồi đếm thêm số lẻ nhé!`;
+            } else {
+                count = Math.floor(Math.random() * (currentLesson.maxRange - 1)) + 2;
+                const activeItems = THEME_DATA[currentTheme];
+                const icon = activeItems[Math.floor(Math.random() * activeItems.length)];
+                document.getElementById("prompt-text").innerText = `Bé hãy đếm xem có tất cả bao nhiêu hình ${icon} nhé!`;
+                let html = `<div class="flex flex-wrap justify-center gap-4 max-w-xl">`;
+                for(let i=0; i<count; i++) html += `<span class="text-6xl pulse-active cursor-pointer" onclick="playSfx('success')">${icon}</span>`;
+                html += `</div>`;
+                document.getElementById("workspace").innerHTML = html;
+                currentHint = `Bé hãy dùng ngón tay chỉ vào từng hình và đếm to: 1, 2, 3... để không đếm lặp lại nhé!`;
+            }
+            generateOptions(count, currentLesson.maxRange);
+        }
+
+        function renderComparison() {
+            const a = Math.floor(Math.random() * currentLesson.maxRange);
+            let b = Math.floor(Math.random() * currentLesson.maxRange);
+            while (currentLesson.maxRange < 20 && a === b) b = Math.floor(Math.random() * currentLesson.maxRange);
+            
+            let answer = a > b ? ">" : (a < b ? "<" : "=");
+            document.getElementById("prompt-text").innerText = `Điền dấu thích hợp vào chỗ trống để so sánh 2 số nhé!`;
+            
+            document.getElementById("workspace").innerHTML = `
+                <div class="flex items-center gap-8 bg-purple-50 p-8 rounded-3xl border-4 border-purple-200">
+                    <span class="text-6xl font-black text-blue-600">${a}</span>
+                    <div id="drop-zone" class="w-20 h-20 border-4 border-dashed border-gray-400 rounded-2xl flex items-center justify-center text-5xl font-black text-gray-300">?</div>
+                    <span class="text-6xl font-black text-red-600">${b}</span>
+                </div>
+            `;
+            
+            currentHint = `Bé tưởng tượng dấu là miệng con cá sấu. Cá sấu tham ăn luôn há to miệng (> hoặc <) quay về phía số LỚN HƠN. Nếu 2 số bằng nhau thì chọn dấu = nhé!`;
+            
+            const inputs = document.getElementById("interactive-inputs");
+            [">", "=", "<"].forEach(sign => {
+                const btn = document.createElement("button");
+                btn.className = "w-20 h-20 bg-yellow-100 hover:bg-yellow-300 border-4 border-yellow-400 text-5xl font-black text-amber-700 rounded-2xl bounce-hover";
+                btn.innerText = sign;
+                btn.onclick = () => submitAnswer(sign, answer, btn);
+                inputs.appendChild(btn);
+            });
+        }
+
+        function renderAddition() {
+            let a, b;
+            if (currentLesson.maxRange <= 10) {
+                a = Math.floor(Math.random() * 8) + 1;
+                b = Math.floor(Math.random() * (10 - a)) + 1;
+            } else {
+                a = Math.floor(Math.random() * 80) + 10;
+                let maxBOnes = 9 - (a % 10);
+                b = Math.floor(Math.random() * 8) * 10 + Math.floor(Math.random() * maxBOnes);
+            }
+            const c = a + b;
+            
+            // Random pattern if defined, else full random
+            const pattern = currentLesson.pattern ? currentLesson.pattern[Math.floor(Math.random() * currentLesson.pattern.length)] : Math.floor(Math.random() * 5);
+            let equationHtml = "";
+            let correctAnswer = 0;
+            const qSpan = `<span class="text-rose-500 w-16 text-center inline-block border-b-8 border-rose-500 pb-1">?</span>`;
+            
+            if (pattern === 0) {
+                equationHtml = `<span>${a}</span> <span class="text-green-500">+</span> <span>${b}</span> <span class="text-gray-400">=</span> ${qSpan}`;
+                correctAnswer = c;
+                currentHint = currentLesson.maxRange <= 10 ? `Bé đếm nhẩm tiếp từ ${Math.max(a,b)}, thêm ${Math.min(a,b)} ngón tay nhé!` : `Cộng Đơn vị trước: ${a%10} + ${b%10}, rồi cộng Chục: ${Math.floor(a/10)} + ${Math.floor(b/10)} nhé!`;
+            } else if (pattern === 1) {
+                equationHtml = `<span>${b}</span> <span class="text-green-500">+</span> <span>${a}</span> <span class="text-gray-400">=</span> ${qSpan}`;
+                correctAnswer = c;
+                currentHint = `Phép cộng có thể đổi chỗ, ${b} + ${a} cũng giống như ${a} + ${b} thôi bé nhé!`;
+            } else if (pattern === 2) {
+                equationHtml = `<span>${a}</span> <span class="text-green-500">+</span> ${qSpan} <span class="text-gray-400">=</span> <span>${c}</span>`;
+                correctAnswer = b;
+                currentHint = `Bé đang có ${a}, cần thêm mấy nữa để được ${c}? Bé đếm tiếp từ ${a} đến ${c} xem là thêm mấy ngón nhé!`;
+            } else if (pattern === 3) {
+                equationHtml = `${qSpan} <span class="text-green-500">+</span> <span>${a}</span> <span class="text-gray-400">=</span> <span>${c}</span>`;
+                correctAnswer = b;
+                currentHint = `Số nào cộng với ${a} thì bằng ${c}? Bé có thể lấy ${c} trừ đi ${a} để tìm ra số còn thiếu nhé!`;
+            } else if (pattern === 4) {
+                equationHtml = `${qSpan} <span class="text-gray-400">=</span> <span>${a}</span> <span class="text-green-500">+</span> <span>${b}</span>`;
+                correctAnswer = c;
+                currentHint = `Dấu bằng nằm bên trái cũng không sao! Kết quả của ${a} + ${b} là bao nhiêu thì bé điền vào nhé!`;
+            }
+
+            document.getElementById("prompt-text").innerText = `Bé hãy tìm số thích hợp điền vào dấu hỏi chấm nhé!`;
+            document.getElementById("workspace").innerHTML = `<div class="flex items-center justify-center gap-4 text-6xl font-black text-slate-700 w-full">${equationHtml}</div>`;
+            generateOptions(correctAnswer, currentLesson.maxRange);
+        }
+
+        function renderSubtraction() {
+            let a, b;
+            if (currentLesson.maxRange <= 10) {
+                a = Math.floor(Math.random() * 8) + 2; 
+                b = Math.floor(Math.random() * (a - 1)) + 1; 
+            } else {
+                a = Math.floor(Math.random() * 80) + 20;
+                let aOnes = a % 10;
+                b = Math.floor(Math.random() * Math.floor(a/10)) * 10 + Math.floor(Math.random() * aOnes);
+                if(b===0) b = 1;
+            }
+            const c = a - b;
+            
+            // Random pattern if defined, else full random
+            const pattern = currentLesson.pattern ? currentLesson.pattern[Math.floor(Math.random() * currentLesson.pattern.length)] : Math.floor(Math.random() * 4);
+            let equationHtml = "";
+            let correctAnswer = 0;
+            const qSpan = `<span class="text-rose-500 w-16 text-center inline-block border-b-8 border-rose-500 pb-1">?</span>`;
+            
+            if (pattern === 0) {
+                equationHtml = `<span>${a}</span> <span class="text-red-500">-</span> <span>${b}</span> <span class="text-gray-400">=</span> ${qSpan}`;
+                correctAnswer = c;
+                currentHint = currentLesson.maxRange <= 10 ? `Bé xòe ${a} ngón tay, gập đi ${b} ngón tay xem còn mấy?` : `Trừ Đơn vị trước: ${a%10} - ${b%10}, rồi trừ Chục: ${Math.floor(a/10)} - ${Math.floor(b/10)} nhé!`;
+            } else if (pattern === 1) {
+                equationHtml = `<span>${a}</span> <span class="text-red-500">-</span> ${qSpan} <span class="text-gray-400">=</span> <span>${c}</span>`;
+                correctAnswer = b;
+                currentHint = `Từ ${a} bớt đi mấy thì còn ${c}? Bé có thể lấy ${a} trừ đi ${c} để tìm ra số bị bớt nhé!`;
+            } else if (pattern === 2) {
+                equationHtml = `${qSpan} <span class="text-red-500">-</span> <span>${b}</span> <span class="text-gray-400">=</span> <span>${c}</span>`;
+                correctAnswer = a;
+                currentHint = `Số nào bớt đi ${b} thì còn ${c}? Bé hãy lấy ${c} cộng lại với ${b} để tìm ra số ban đầu lớn nhất nhé!`;
+            } else if (pattern === 3) {
+                equationHtml = `${qSpan} <span class="text-gray-400">=</span> <span>${a}</span> <span class="text-red-500">-</span> <span>${b}</span>`;
+                correctAnswer = c;
+                currentHint = `Dấu bằng ở phía trước cũng giống như bình thường thôi. Bé tính xem ${a} - ${b} bằng mấy nhé!`;
+            }
+
+            document.getElementById("prompt-text").innerText = `Bé hãy tìm số thích hợp điền vào dấu hỏi chấm nhé!`;
+            document.getElementById("workspace").innerHTML = `<div class="flex items-center justify-center gap-4 text-6xl font-black text-slate-700 w-full">${equationHtml}</div>`;
+            generateOptions(correctAnswer, currentLesson.maxRange);
+        }
+
+        function renderShapes() {
+            const shapes = [
+                { id: "vuông", html: `<div class="shape shape-square"></div>` },
+                { id: "tròn", html: `<div class="shape shape-circle"></div>` },
+                { id: "tam giác", html: `<div class="shape shape-triangle"></div>` },
+                { id: "chữ nhật", html: `<div class="shape shape-rectangle"></div>` }
+            ];
+            const target = shapes[Math.floor(Math.random() * shapes.length)];
+            
+            document.getElementById("prompt-text").innerText = `Bé hãy chỉ cho thỏ con đâu là Hình ${target.id} nhé!`;
+            
+            const displayShapes = [...shapes].sort(() => Math.random() - 0.5);
+            let html = `<div class="flex gap-8 flex-wrap justify-center items-end bg-gray-50 p-8 rounded-[40px] border-4 border-dashed border-gray-200">`;
+            displayShapes.forEach(s => {
+                html += `<div onclick="submitAnswer('${s.id}', '${target.id}', this)" class="cursor-pointer bounce-hover p-4 hover:bg-white rounded-2xl flex items-center justify-center h-32 w-40">
+                    ${s.html}
+                </div>`;
+            });
+            html += `</div>`;
+            document.getElementById("workspace").innerHTML = html;
+            
+            currentHint = `Bé nhớ nhé: Hình vuông có 4 cạnh bằng nhau. Hình tròn thì tròn xoe lăn được. Hình tam giác có 3 đỉnh nhọn giống mái nhà! Hình chữ nhật giống cái cửa ra vào.`;
+        }
+
+        function renderTime() {
+            const hour = Math.floor(Math.random() * 12) + 1;
+            document.getElementById("prompt-text").innerText = `Đồng hồ đang chỉ mấy giờ?`;
+            
+            document.getElementById("workspace").innerHTML = `
+                <div class="relative w-48 h-48 rounded-full border-[12px] border-red-500 bg-white flex items-center justify-center shadow-lg">
+                    <div class="absolute w-3 h-3 bg-black rounded-full z-10"></div>
+                    <!-- Kim phút -->
+                    <div class="absolute w-1.5 h-[40%] bg-blue-500 rounded-full origin-bottom" style="top: 10%; left:calc(50% - 0.1875rem);"></div>
+                    <!-- Kim giờ -->
+                    <div class="absolute w-2 h-[25%] bg-black rounded-full origin-bottom" style="top: 25%; left:calc(50% - 0.25rem); transform: rotate(${hour * 30}deg);"></div>
+                </div>
+            `;
+            currentHint = `Kim dài (màu xanh) chỉ số 12 là giờ đúng. Kim ngắn (màu đen) chỉ vào số mấy thì là bấy nhiêu giờ. Ở đây kim đen đang chỉ số ${hour} đấy bé!`;
+            generateOptions(hour, 12, " giờ");
+        }
+
+        function renderAdvancedChain() {
+            const isPlus = Math.random() > 0.5;
+            let a, b, d;
+            
+            if (currentLesson.maxRange <= 10) {
+                if (isPlus) {
+                    a = Math.floor(Math.random() * 5) + 1; // 1-5
+                    b = Math.floor(Math.random() * (7 - a)) + 1; // Ensure a+b <= 7
+                    d = Math.floor(Math.random() * (10 - (a + b))) + 1; // Ensure a+b+d <= 10
+                } else {
+                    a = Math.floor(Math.random() * 5) + 3; // 3-7
+                    b = Math.floor(Math.random() * (10 - a)) + 1; // Ensure a+b <= 10
+                    d = Math.floor(Math.random() * (a + b - 1)) + 1; // Ensure d < a+b
+                }
+            } else {
+                a = Math.floor(Math.random() * 8) + 1;
+                b = Math.floor(Math.random() * 8) + 1;
+                d = Math.floor(Math.random() * 8) + 1;
+            }
+            
+            let c = 0;
+            let op2Html = "";
+            if (isPlus) {
+                c = a + b + d;
+                op2Html = `<span class="text-green-500">+</span> <span>${d}</span>`;
+                currentHint = `Bé tính ${a} + ${b} trước bằng mấy nào? Xong rồi lấy kết quả đó đếm thêm ${d} ngón tay nữa nhé!`;
+            } else {
+                if (a + b < d) {
+                    let temp = a; a = d; d = temp;
+                }
+                c = a + b - d;
+                op2Html = `<span class="text-red-500">-</span> <span>${d}</span>`;
+                currentHint = `Bé tính ${a} + ${b} trước bằng mấy nào? Sau đó xòe ngón tay ứng với kết quả và gập đi ${d} ngón nhé!`;
+            }
+            
+            document.getElementById("prompt-text").innerText = `Bé hãy tính kết quả của chuỗi phép tính này nhé!`;
+            document.getElementById("workspace").innerHTML = `
+                <div class="flex items-center justify-center gap-4 text-5xl font-black text-slate-700 w-full">
+                    <span>${a}</span> <span class="text-green-500">+</span> <span>${b}</span> ${op2Html} <span class="text-gray-400">=</span> <span class="text-rose-500 w-16 text-center border-b-8 border-rose-500 pb-1">?</span>
+                </div>
+            `;
+            generateOptions(c, 30);
+        }
+
+        function renderAdvancedBalance() {
+            let limit = currentLesson.maxRange <= 10 ? 5 : 10;
+            let a = Math.floor(Math.random() * limit) + 1;
+            let b = Math.floor(Math.random() * limit) + 1;
+            let val1 = a + b;
+            
+            let c, d;
+            let val2;
+            const rand = Math.random();
+            if (rand < 0.4) {
+                c = Math.floor(Math.random() * val1);
+                if (c === 0) c = 1;
+                d = val1 - c;
+                val2 = val1;
+            } else {
+                c = Math.floor(Math.random() * limit) + 1;
+                d = Math.floor(Math.random() * limit) + 1;
+                val2 = c + d;
+            }
+            
+            let answer = val1 > val2 ? ">" : (val1 < val2 ? "<" : "=");
+            
+            currentHint = `Bên trái ${a} + ${b} bằng mấy? Bên phải ${c} + ${d} bằng mấy? Bé so sánh hai kết quả đó xem bên nào lớn hơn nhé!`;
+            document.getElementById("prompt-text").innerText = `Điền dấu thích hợp để so sánh 2 biểu thức này nhé!`;
+            
+            document.getElementById("workspace").innerHTML = `
+                <div class="flex items-center gap-6 p-8 rounded-3xl border-4 border-purple-200 bg-purple-50">
+                    <div class="flex items-center gap-3 text-4xl font-black text-blue-600"><span>${a}</span><span class="text-gray-400 text-3xl">+</span><span>${b}</span></div>
+                    <div id="drop-zone" class="w-16 h-16 border-4 border-dashed border-gray-400 rounded-2xl flex items-center justify-center text-4xl font-black text-gray-300">?</div>
+                    <div class="flex items-center gap-3 text-4xl font-black text-red-600"><span>${c}</span><span class="text-gray-400 text-3xl">+</span><span>${d}</span></div>
+                </div>
+            `;
+            
+            const inputs = document.getElementById("interactive-inputs");
+            [">", "=", "<"].forEach(sign => {
+                const btn = document.createElement("button");
+                btn.className = "w-20 h-20 bg-yellow-100 hover:bg-yellow-300 border-4 border-yellow-400 text-5xl font-black text-amber-700 rounded-2xl bounce-hover";
+                btn.innerText = sign;
+                btn.onclick = () => submitAnswer(sign, answer, btn);
+                inputs.appendChild(btn);
+            });
+        }
+
+        // OUTPUT HELPERS
+        function generateOptions(correctAnswer, maxLimit, suffix = "") {
+            const inputs = document.getElementById("interactive-inputs");
+            let options = new Set([correctAnswer]);
+            while (options.size < 4) {
+                let diff = Math.floor(Math.random() * 9) - 4; 
+                if(currentLesson.maxRange > 20) diff = (Math.floor(Math.random() * 5) - 2) * 10 + (Math.floor(Math.random() * 5) - 2);
+                let r = correctAnswer + diff;
+                if (r >= 0 && r !== correctAnswer && r <= maxLimit * 1.5) options.add(r);
+            }
+            Array.from(options).sort((a,b) => a-b).forEach(num => {
+                const btn = document.createElement("button");
+                btn.className = "px-6 py-4 min-w-[80px] bg-yellow-100 hover:bg-yellow-300 border-4 border-yellow-400 text-3xl font-black text-amber-700 rounded-2xl bounce-hover shadow-sm";
+                btn.innerText = num + suffix;
+                btn.onclick = () => submitAnswer(num, correctAnswer, btn);
+                inputs.appendChild(btn);
+            });
+        }
+
+        function submitAnswer(user, correct, btnEl) {
+            const btns = document.getElementById("interactive-inputs").querySelectorAll("button");
+            btns.forEach(b => b.disabled = true);
+            
+            if (user === correct) {
+                btnEl.classList.add("bg-green-500", "text-white", "border-green-600");
+                playSfx('success');
+                confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+                score += 10;
+                document.getElementById("score-val").innerText = score;
+                document.getElementById("prompt-text").innerText = `🎉 Giỏi quá! Đáp án chính xác là ${correct}!`;
+                speak(`Giỏi quá! Cảm ơn bé!`);
+                document.getElementById("btn-next").classList.remove("hidden");
+            } else {
+                btnEl.classList.add("bg-red-500", "text-white", "border-red-600");
+                playSfx('fail');
+                document.getElementById("prompt-text").innerText = `Chưa đúng mất rồi. Bé làm lại nhé!`;
+                speak(`Thử lại nha bé yêu!`);
+                setTimeout(() => {
+                    btnEl.classList.remove("bg-red-500", "text-white", "border-red-600");
+                    btns.forEach(b => b.disabled = false);
+                }, 1000);
+            }
+        }
+
+        // UTILS
+        let currentAudio = null;
+        function speak(text) {
+            if (!voiceEnabled) return;
+            if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            
+            // Cắt chuỗi để tránh lỗi quá 200 ký tự của Google TTS
+            let safeText = text + "."; 
+            const chunks = safeText.match(/[^.!?;]+[.!?;]+/g) || [safeText];
+            let i = 0;
+            
+            function playNext() {
+                if (i >= chunks.length) return;
+                let chunkText = chunks[i].trim();
+                if (!chunkText) { i++; return playNext(); }
+                
+                const url = `https://translate.googleapis.com/translate_tts?ie=UTF-8&tl=vi&client=tw-ob&q=${encodeURIComponent(chunkText)}`;
+                currentAudio = new Audio(url);
+                currentAudio.onended = () => { i++; playNext(); };
+                currentAudio.play().catch(err => {
+                    console.warn("Google TTS bị chặn, chuyển về Web Speech API dự phòng:", err);
+                    if ('speechSynthesis' in window) {
+                        let u = new SpeechSynthesisUtterance(chunkText);
+                        u.lang = 'vi-VN';
+                        u.onend = () => { i++; playNext(); };
+                        window.speechSynthesis.speak(u);
+                    } else {
+                        i++; playNext();
+                    }
+                });
+            }
+            playNext();
+        }
+        function speakPrompt() { speak(document.getElementById("prompt-text").innerText); }
+        function toggleVoice() {
+            voiceEnabled = !voiceEnabled;
+            const btn = document.getElementById("btn-voice");
+            if (voiceEnabled) {
+                btn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
+                btn.classList.replace("bg-gray-200", "bg-yellow-100");
+                btn.classList.replace("text-gray-500", "text-yellow-600");
+                speak("Đã bật âm thanh");
+            } else {
+                btn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
+                btn.classList.replace("bg-yellow-100", "bg-gray-200");
+                btn.classList.replace("text-yellow-600", "text-gray-500");
+            }
+        }
+        
+        function showHint() {
+            const hintBox = document.getElementById("hint-box");
+            document.getElementById("hint-text").innerText = currentHint;
+            hintBox.classList.remove("hidden");
+            speakHint();
+        }
+        
+        function speakHint() {
+            speak(currentHint);
+        }
+
+        function playSfx(type) {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain); gain.connect(ctx.destination);
+            if (type === 'success') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+                osc.frequency.setValueAtTime(783.99, ctx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+                osc.start(); osc.stop(ctx.currentTime + 0.5);
+            } else {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, ctx.currentTime);
+                gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                osc.start(); osc.stop(ctx.currentTime + 0.3);
+            }
+        }
+
+        // INIT
+        window.addEventListener('load', () => {
+            renderMenu();
+        });
+    </script>
+</body>
+</html>
