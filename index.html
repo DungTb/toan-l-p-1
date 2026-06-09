@@ -129,6 +129,7 @@
             <h2 id="intro-title" class="text-4xl font-black text-amber-500">Phương pháp làm bài</h2>
             <div class="bg-amber-50 border-4 border-amber-200 rounded-3xl p-6 max-w-3xl shadow-inner relative w-full">
                 <span class="absolute -top-6 -left-4 text-5xl">👩🏫</span>
+                <!-- NÚT LOA: Bé phải chủ động bấm nút này thì máy mới đọc hướng dẫn -->
                 <button onclick="readMethod()" class="absolute -top-6 -right-4 w-12 h-12 rounded-full border-4 border-amber-200 bg-amber-100 text-xl font-bold bounce-hover shadow-md flex items-center justify-center" title="Đọc phương pháp">🔊</button>
                 <div id="intro-content" class="text-xl font-bold text-amber-800 leading-relaxed text-left pt-2">
                     </div>
@@ -144,6 +145,7 @@
                 <h3 id="game-title" class="text-xl font-black text-blue-600 truncate max-w-[140px] sm:max-w-none">Đang học Toán</h3>
                 <div class="flex gap-2">
                     <button onclick="showHint()" class="w-10 h-10 rounded-full bg-yellow-100 text-lg flex items-center justify-center shadow-sm border-0 cursor-pointer">💡</button>
+                    <!-- NÚT LOA: Bé chủ động bấm nút này thì máy mới đọc câu hỏi -->
                     <button onclick="speakPrompt()" class="w-10 h-10 rounded-full bg-blue-100 text-lg flex items-center justify-center shadow-sm border-0 cursor-pointer">🔊</button>
                 </div>
             </div>
@@ -274,13 +276,22 @@
             });
         }
 
-        // SPEECH ENGINE 
+        // SPEECH ENGINE CẢI TIẾN: Đọc chuẩn các dấu Toán học
         function speak(text) {
             if (!voiceEnabled) return;
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel(); 
 
-                let plainText = text.replace(/<br\/>/g, '. ').replace(/<\/?b>/g, '').replace(/<\/?i>/g, '').replace(/&lt;/g, 'nhỏ hơn').replace(/&gt;/g, 'lớn hơn');
+                // Thay thế thẻ HTML và quy đổi dấu toán học ra chữ để máy đọc mượt
+                let plainText = text.replace(/<br\/>/g, '. ')
+                                    .replace(/<\/?b>/g, '')
+                                    .replace(/<\/?i>/g, '')
+                                    .replace(/&lt;/g, ' nhỏ hơn ')
+                                    .replace(/&gt;/g, ' lớn hơn ')
+                                    .replace(/>/g, ' lớn hơn ')
+                                    .replace(/</g, ' nhỏ hơn ')
+                                    .replace(/=/g, ' bằng ');
+                                    
                 let utterance = new SpeechSynthesisUtterance(plainText);
                 utterance.lang = 'vi-VN';
                 utterance.rate = 0.92; 
@@ -312,7 +323,6 @@
             speak("Phương pháp làm bài. " + currentLesson.method);
         }
 
-        // ĐÃ SỬA: Xóa hàm tự động đọc (readMethod) để yên tĩnh khi chọn bài
         function startLesson(id) {
             currentLesson = CURRICULUM.find(l => l.id === id);
             document.getElementById("screen-menu").classList.add("hidden");
@@ -320,7 +330,7 @@
             document.getElementById("intro-title").innerText = currentLesson.title;
             document.getElementById("intro-content").innerHTML = currentLesson.method;
             
-            // Xóa readMethod() ở đây
+            // HOÀN TOÀN KHÔNG ĐỌC KHI CHỌN BÀI MỚI (Trừ khi bấm loa)
         }
 
         function startGameAfterIntro() {
@@ -338,7 +348,6 @@
             if ('speechSynthesis' in window) window.speechSynthesis.cancel();
         }
 
-        // ĐÃ SỬA: Xóa hàm tự động đọc (speakPrompt) khi qua câu mới
         function loadNextRandomQuestion() {
             document.getElementById("btn-next").classList.add("hidden");
             document.getElementById("hint-box").classList.add("hidden"); 
@@ -359,7 +368,7 @@
                 case "ADVANCED_BALANCE": renderAdvancedBalance(); break;
             }
             
-            // Xóa speakPrompt() ở đây
+            // HOÀN TOÀN KHÔNG ĐỌC KHI RA CÂU MỚI (Trừ khi bấm loa)
         }
 
         // GAME ENGINES
@@ -579,7 +588,6 @@
             });
         }
 
-        // GIỮ LẠI LỆNH ĐỌC KHI BÉ TRẢ LỜI ĐÚNG / SAI
         function submitAnswer(user, correct, btnEl) {
             const btns = document.getElementById("interactive-inputs").querySelectorAll("button");
             btns.forEach(b => b.disabled = true);
@@ -594,8 +602,8 @@
                 document.getElementById("score-val").innerText = score;
                 document.getElementById("prompt-text").innerText = `🎉 Bé giỏi quá! Đáp án chính xác là ${correct}!`;
                 
-                // MÁY ĐỌC KHEN NGỢI
-                speak(`Giỏi quá! Bé yêu xuất sắc lắm!`);
+                // MÁY ĐỌC KHEN NGỢI VÀ ĐỌC LUÔN ĐÁP ÁN ĐÚNG
+                speak(`Giỏi quá! Bé yêu xuất sắc lắm! Đáp án đúng là ${correct}.`);
                 
                 document.getElementById("btn-next").classList.remove("hidden");
             } else {
