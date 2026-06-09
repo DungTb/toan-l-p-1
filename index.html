@@ -24,6 +24,9 @@
         .relative{position:relative}.absolute{position:absolute}
         .z-10{z-index:10}.cursor-pointer{cursor:pointer}
         
+        /* ĐÂY LÀ DÒNG CHỮA LỖI GIÚP MENU BIẾN MẤT HOÀN TOÀN KHI VÀO BÀI HỌC */
+        .hidden { display: none !important; }
+        
         /* CSS TÙY BIẾN SỬA LỖI TRÀN HEADER TRÊN IPHONE */
         body { font-family: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif; background-color: #f0f9ff; user-select: none; -webkit-user-select: none; }
         
@@ -106,11 +109,19 @@
             
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div class="bg-blue-50 border-4 border-blue-200 rounded-3xl p-6">
-                    <h3 class="text-2xl font-black text-blue-600 mb-4 border-b-2 border-blue-200 pb-2">Học Kỳ 1 (Phạm vi 10)</h3>
+                    <!-- Giao diện nút đóng/mở Học kỳ 1 -->
+                    <div class="flex justify-between items-center mb-4 border-b-2 border-blue-200 pb-2 cursor-pointer bounce-hover" onclick="toggleSemester('hk1')">
+                        <h3 class="text-2xl font-black text-blue-600 m-0">Học Kỳ 1 (Phạm vi 10)</h3>
+                        <span id="icon-hk1" class="text-xl bg-blue-200 text-blue-800 rounded-full w-8 h-8 flex items-center justify-center font-bold">🔽</span>
+                    </div>
                     <div id="menu-hk1" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
                 </div>
                 <div class="bg-green-50 border-4 border-green-200 rounded-3xl p-6">
-                    <h3 class="text-2xl font-black text-green-600 mb-4 border-b-2 border-green-200 pb-2">Học Kỳ 2 (Phạm vi 100)</h3>
+                    <!-- Giao diện nút đóng/mở Học kỳ 2 -->
+                    <div class="flex justify-between items-center mb-4 border-b-2 border-green-200 pb-2 cursor-pointer bounce-hover" onclick="toggleSemester('hk2')">
+                        <h3 class="text-2xl font-black text-green-600 m-0">Học Kỳ 2 (Phạm vi 100)</h3>
+                        <span id="icon-hk2" class="text-xl bg-green-200 text-green-800 rounded-full w-8 h-8 flex items-center justify-center font-bold">🔽</span>
+                    </div>
                     <div id="menu-hk2" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
                 </div>
             </div>
@@ -119,7 +130,7 @@
         <div id="screen-intro" class="hidden flex flex-col h-full flex-grow items-center justify-center text-center gap-8">
             <h2 id="intro-title" class="text-4xl font-black text-amber-500">Phương pháp làm bài</h2>
             <div class="bg-amber-50 border-4 border-amber-200 rounded-3xl p-6 max-w-3xl shadow-inner relative w-full">
-                <span class="absolute -top-6 -left-4 text-5xl">👩‍🏫</span>
+                <span class="absolute -top-6 -left-4 text-5xl">👩🏫</span>
                 <button onclick="readMethod()" class="absolute -top-6 -right-4 w-12 h-12 rounded-full border-4 border-amber-200 bg-amber-100 text-xl font-bold bounce-hover shadow-md flex items-center justify-center" title="Đọc phương pháp">🔊</button>
                 <div id="intro-content" class="text-xl font-bold text-amber-800 leading-relaxed text-left pt-2">
                     </div>
@@ -172,7 +183,7 @@
         let currentTheme = "FRUIT";
         const THEME_DATA = {
             "FRUIT": ["🍎", "🍓", "🍌", "🍉", "🍇"],
-            "POLICE": ["👮‍♂️", "🚓", "🚁", "🚨", "🛡️"],
+            "POLICE": ["👮♂️", "🚓", "🚁", "🚨", "🛡️"],
             "ANIMAL": ["🐶", "🐱", "🐰", "🦊", "🦁"]
         };
         
@@ -224,6 +235,21 @@
             { id: "hk2_7", semester: 2, type: "ADVANCED_BALANCE", title: "So Sánh Phép Tính", icon: "⚖️", desc: "So sánh (A+B) and (C+D)", maxRange: 20,
               method: "Bé tính xem phép tính bên trái bằng mấy, phép tính bên phải bằng mấy. Sau đó so sánh hai kết quả đó với nhau rồi điền dấu thích hợp nha!" }
         ];
+
+        // Hàm Đóng/Mở Danh Sách Học Kỳ
+        function toggleSemester(hk) {
+            unlockIOSAudio();
+            const menu = document.getElementById("menu-" + hk);
+            const icon = document.getElementById("icon-" + hk);
+            
+            if (menu.classList.contains("hidden")) {
+                menu.classList.remove("hidden");
+                icon.innerText = "🔽"; // Mũi tên chỉ xuống (Mở)
+            } else {
+                menu.classList.add("hidden");
+                icon.innerText = "▶️"; // Mũi tên chỉ ngang (Đóng)
+            }
+        }
 
         // INIT MENU
         function renderMenu() {
@@ -297,7 +323,8 @@
             document.getElementById("intro-title").innerText = currentLesson.title;
             document.getElementById("intro-content").innerHTML = currentLesson.method;
             
-            setTimeout(() => { readMethod(); }, 300);
+            // Xóa setTimeout, gọi hàm đọc âm thanh trực tiếp để không bị trình duyệt chặn
+            readMethod(); 
         }
 
         function startGameAfterIntro() {
